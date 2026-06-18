@@ -252,6 +252,7 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
         )
 
     private val sharedPrefs = application.getSharedPreferences("mission_tracker_prefs", Context.MODE_PRIVATE)
+    private var isPrepopulating = false
 
     // Mode: true = PS5 Neon Dark (default), false = PS5 Tech Light
     private val _isDarkMode = MutableStateFlow(sharedPrefs.getBoolean("is_dark_mode", true))
@@ -308,7 +309,11 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
                     // Trigger daily repeat checking
                     checkAndResetRepeatingMissions(missions)
                 } else {
-                    prepopulateDefaultMissions()
+                    val alreadyPrepopulated = sharedPrefs.getBoolean("prepopulated", false)
+                    if (!alreadyPrepopulated && !isPrepopulating) {
+                        isPrepopulating = true
+                        prepopulateDefaultMissions()
+                    }
                 }
             }
         }
@@ -398,6 +403,7 @@ class TaskViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private suspend fun prepopulateDefaultMissions() {
+        sharedPrefs.edit().putBoolean("prepopulated", true).apply()
         val firstId = repository.insertMission(
             Mission(
                 title = "ASTRO'S PLAYROOM CONSOLE",
