@@ -1,0 +1,6 @@
+{
+  "name": "Mission Progress",
+  "description": "A dark, cyberpunk game-engine style tracker for completing checklist missions.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
